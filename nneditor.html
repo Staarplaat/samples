@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+    <link rel="icon" type="image/png" href="favicon.png">
+    
+  <title>Перепиксель</title>
+
+  <!-- Bootstrap 5 CSS -->
+  <link href="bootstrap_5.3.2.min.css" rel="stylesheet">
+
+  <!-- jQuery и Bootstrap Bundle -->
+  <script src="jquery-3.6.0.min.js"></script>
+  <script src="bootstrap_5.3.2.bundle.min.js"></script>
+    <script src="lottie_svg.min.js"></script>
+
+  <!-- Custom JS -->
+  <script src="nneditor.js?t=21"></script>
+    
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="nneditor.css?t=21">
+</head>
+<body>
+    
+
+  <div id="container">
+    <!-- Header -->
+<!--     <div id="corner-credit">Зеленый Коридор представляет</div> -->
+      <div id="corner-credit">
+<!--           add in code -->
+    </div>
+      
+    <div id="header" style="display: flex; align-items: center; gap: 10px; flex-wrap: nowrap;">
+<!--       <h2>Перепиксель</h2> -->
+        
+        <div id="logo-title">
+          <div id="logo-container">
+            <!-- Вставь SVG здесь -->
+            
+                <svg version="1.1" id="Layer_1" shape-rendering="geometricPrecision"
+                     xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 40 40"
+                     style="enable-background:new 0 0 40 40;" xml:space="preserve">
+                <style type="text/css">
+                    .st0{fill:#3c96f8;}
+                    .st1{fill:#212129;}
+                </style>
+                <rect y="0" class="st0" width="40" height="40"/>
+                <polygon class="st1" points="6.2,6.2 6.2,33.8 12.5,33.8 12.5,27.5 12.5,12.5 27.5,12.5 27.5,27.5 27.5,33.8 33.8,33.8 33.8,6.2 "/>
+                </svg>
+
+          </div>
+          <h2>Перепиксель</h2>
+        </div>
+        
+        
+<!--       <small>Загрузи изображение и опиши, как его изменить</small> -->
+        <div class="info-button">?
+            <div class="tooltip">
+              <strong style="color:#8bffaf; font-size: 18px;">Нейросетевой редактор изображений бесплатно, без смс и регистрации</strong><br>
+              Может менять объекты, стиль и прочее.</strong><br>
+              <strong>Лица еще не умеет сохранять. Лица сохраняет только если ему не нужно перерисовывать что-то рядом с лицом.</strong><br>
+              1. Грузим фото.
+              2. Пишем, как хотим изменить (примеры: «сделай в стиле мультфильма», «добавь шляпу», «измени цвет футболки»).
+              3. Жмем «Создать изображение».<br>
+              История генераций отображается ниже.<br>
+              <div style="color:#8bffaf;">Создано на основе новой нейросетевой модели Qwen-Image-Edit от августа 2025.</div>
+            </div>
+        </div>
+    </div>
+    
+    
+<!--     <div>
+    
+    </div> -->
+    <button id="popup" class="feedback-button" onclick="toggle_feedback_visibility()">Оставить отзыв</button>
+    <button id="gotoGenerator" class="gotogenerator-button" onclick="window.location.href = generator_url;">Генератор 3.0</button>
+
+    
+    
+    
+    
+    
+    
+    <!-- Main Content -->
+    <div id="main">
+      <!-- Left Side: Input Image -->
+      <div id="left">
+        <!-- <div class="panel-title">Исходное изображение</div> -->
+        <div class="image-container image-container-butload" id="input-container">
+          <span class="fs-5" style="color:#67cd61; position: absolute;">Загрузи картинку</span>
+        </div>
+<!--         <div id="controls-left"> -->
+          <input type="file" id="image-upload" accept="image/jpeg, image/jpg, image/png, image/webp" class="form-control loadimgpathfield mb-2" hidden/>
+<!--           <button id="btn-upload" class="btn btn-primary">Загрузить</button>
+        </div> -->
+      </div>
+
+      <!-- Right Side: Output Result -->
+      <div id="right">
+        <!-- <div class="panel-title">Результат</div> -->
+        <div class="image-container image-container-res" id="output-container">
+          <span class="text-secondary fs-5 text-center">Результат появится здесь</span>
+        </div>
+        
+      </div>
+        
+    </div>
+    
+    <div id="prompt-area">
+<!--         <textarea id="prompt" class="form-control" placeholder="Опиши тут, как изменить изображение. 
+Примеры: 'добавь котика', 'сделай в стиле акварели', 'убери очки и замени фон на солнечный пляж'.
+(лица еще не умеет сохранять - только если ему перерисовывать что-то близко к лицу не нужно)" maxlength="455"></textarea> -->
+          <textarea
+            id="prompt"
+            class="form-control"
+            placeholder=""
+            maxlength="455"
+          ></textarea>
+          <div class="placeholder-fake">
+            <div>Опиши тут, как изменить изображение. <br>
+                Примеры: 'добавь котика', 'сделай в стиле акварели', 'замени фон на солнечный пляж'</div>
+            <div class="small">Лица еще не умеет сохранять. Лица сохраняет только если ему не нужно перерисовывать что-то рядом с лицом.</div>
+          </div>
+
+        
+        <div id="controls-right">
+            <button id="btn-use-result" class="btn btn-primary" style="display: none; ">
+                ← Переместить результат в исходную картинку
+            </button>
+            <button id="btn-generate" class="btn btn-success">Создать изображение</button>
+            <!-- Прогресс-бар (изначально скрыт) -->
+            
+        </div>
+        
+    </div>
+    
+    
+    
+    <div id="queue-preloader" style="display:none;">
+        <div id="lottie"></div>
+        <div class="queue-loaderline"></div>
+    </div>
+    
+    
+          <div id="progress-container" style="margin-top: 10px; display: none;">
+                <div id="progress-bar" style="
+                  height: 6px;
+                  background: #007bff;
+                  width: 0%;
+                  transition: width 0.1s linear;
+                  border-radius: 3px;
+                ">
+                </div>
+            </div>
+      
+  </div>
+    
+  
+  <!-- Галерея картинок -->
+  <div class="gallery-block">
+    <div class="gallery-title">Идеи стилей. Кликни - стиль вставится в запрос.</div>
+    <div id="samples-gallery">
+      <div class="gallery-container" id="gallery-container-samples"></div>
+    </div>
+  </div>
+    
+    
+    <!-- История генераций -->
+<!--     <div id="history-section" style="margin-top: 140px;">
+      <h3></h3>
+        
+        <div id="pagination-controls" style="margin-top: 20px; text-align: center; margin-bottom:20px;">
+            <button class="prev-page" disabled>< Назад</button>
+            <span class="page-info text-secondary">Страница 1</span>
+            <button class="next-page">Вперёд ></button>
+        </div>
+          
+      <div id="history-container" style="display: flex; flex-direction: column; gap: 15px;"></div>
+
+        <div id="pagination-controls" style="margin-top: 20px; text-align: center; margin-bottom:20px;">
+            <button class="prev-page" disabled>< Назад</button>
+            <span class="page-info text-secondary">Страница 1</span>
+            <button class="next-page">Вперёд ></button>
+        </div>
+     
+    </div> -->
+    
+    
+    <!-- Индикатор загрузки -->
+    <div id="loading-status" style="font-size: 1.2rem; color: #666; width:100%;">
+        <div class="pageloader"></div>
+      Загрузка...
+    </div>
+    
+    <!-- Вкладки -->
+    <div id="tabs">
+      <button id="tab-my" class="tab-btn active" style="display: none;">Мои картинки</button>
+      <button id="tab-examples" class="tab-btn" style="display: none;">Примеры</button>
+    </div>
+    
+<!-- Пагинация (только для "Мои картинки") -->
+    <div class="pagination-wrapper" style="margin-top: 20px; display: none;">
+      <div class="pagination-controls" style="text-align: center; margin-bottom:20px;">
+        <button class="prev-page" disabled>< Назад</button>
+        <span class="page-info text-secondary">Страница 1</span>
+        <button class="next-page">Вперёд ></button>
+        <!-- Кнопки режима отображения -->
+        <div class="view-mode-buttons">
+          <button class="view-mode-btn" id="list-view-btn" title="Список">
+            <!-- Иконка списка (SVG) -->
+            <svg width="20" height="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <rect x="2" y="2" width="20" height="8" fill="none" stroke="currentColor" stroke-width="2"/>
+              
+              <rect x="2" y="14" width="20" height="8" fill="none" stroke="currentColor" stroke-width="2"/>
+            </svg>
+          </button>
+          <button class="view-mode-btn" id="grid-view-btn" title="Сетка">
+            <!-- Иконка сетки (SVG) -->
+            <svg width="20" height="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <rect x="2" y="2" width="8" height="8" fill="none" stroke="currentColor" stroke-width="2"/>
+              <rect x="2" y="14" width="8" height="8" fill="none" stroke="currentColor" stroke-width="2"/>
+              <rect x="14" y="2" width="8" height="8" fill="none" stroke="currentColor" stroke-width="2"/>
+              <rect x="14" y="14" width="8" height="8" fill="none" stroke="currentColor" stroke-width="2"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Единый контейнер для истории или примеров -->
+    <div id="gallery-container" class="list-view"></div>
+
+    <!-- Пагинация (только для "Мои картинки") -->
+    <div class="pagination-wrapper" style="margin-top: 20px; display: none;">
+      <div class="pagination-controls" style="text-align: center; margin-bottom:20px;">
+        <button class="prev-page" disabled>< Назад</button>
+        <span class="page-info text-secondary">Страница 1</span>
+        <button class="next-page">Вперёд ></button>
+        <!-- Кнопки режима отображения -->
+        <div class="view-mode-buttons">
+          <button class="view-mode-btn" id="list-view-btn2" title="Список">
+            <!-- Иконка списка (SVG) -->
+            <svg width="20" height="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <rect x="2" y="2" width="20" height="8" fill="none" stroke="currentColor" stroke-width="2"/>
+              
+              <rect x="2" y="14" width="20" height="8" fill="none" stroke="currentColor" stroke-width="2"/>
+            </svg>
+          </button>
+          <button class="view-mode-btn" id="grid-view-btn2" title="Сетка">
+            <!-- Иконка сетки (SVG) -->
+            <svg width="20" height="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <rect x="2" y="2" width="8" height="8" fill="none" stroke="currentColor" stroke-width="2"/>
+              <rect x="2" y="14" width="8" height="8" fill="none" stroke="currentColor" stroke-width="2"/>
+              <rect x="14" y="2" width="8" height="8" fill="none" stroke="currentColor" stroke-width="2"/>
+              <rect x="14" y="14" width="8" height="8" fill="none" stroke="currentColor" stroke-width="2"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+        
+        
+        
+        
+    <div id="feedback-main">
+        <div id="feedback-div">
+            <div class="delbutton" onclick="toggle_feedback_visibility()" style="
+                opacity: 1;
+                right: 3px;
+                top: 3px;
+                width: 30px;
+                background-color: #0060df;
+                "></div>
+            <form action="#" method="post" class="form" id="feedback-form1" enctype="multipart/form-data">
+
+                <!-- <p class="name">
+                    <input name="name" type="name" class="validate[required,custom[onlyLetter],length[0,100]] feedback-input" required placeholder="Name" id="feedback-name" />
+                </p> -->
+
+                <p class="email">
+                    <input name="email" type="email" class="validate[required,custom[email]] feedback-input" id="feedback-email" placeholder="e-mail для ответа, если вопрос" required />
+                </p>
+
+                <p class="text">
+                    <textarea name="comment" type="comment" minlength="5" class="feedback-input" id="feedback-comment" required placeholder="Сообщение"></textarea>
+                </p>
+
+                <div class="feedback-submit">
+                    <input type="submit" value="Отправить" id="feedback-button-blue" />
+                    <div class="feedback-ease"></div>
+                </div>
+            </form>
+        </div>
+    </div>
+        
+    <div id="message-main">
+        <div id="message-div">
+            <div class="delbutton" onclick="toggle_message_visibility()" style="
+                opacity: 1;
+                right: 10px;
+                top: 10px;
+                width: 30px;
+                background-color: #0060df;
+                "></div>
+            
+
+                <p class="text" style="color: #fff;">
+                    Уважаемый пользователь!   
+            </br></br>Мы рады, что вы используете наш сайт для создания изображений. Можно создавать любые изображения: для работы, для развлечения и просто так. </br></br>Однако, мы хотели бы обратить ваше внимание на то, что наш сайт НЕ предназначен для генерации непристойного контента. Если вы обнаружите что сайт ошибочно считает запрос непристойным, пожалуйста, сообщите нам об этом.   
+        </br></br>Спасибо за понимание и поддержку.   </br></br>С уважением, Команда сайта
+                </p>
+
+                
+        </div>
+    </div>
+
+    
+    <!-- Модальное окно подтверждения удаления -->
+    <div id="delete-modal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4>Подтверждение удаления</h4>
+          <span class="close">&times;</span>
+        </div>
+        <div class="modal-body">
+          <p>Действительно удалить этот блок запрос-результат?</p>
+          <!-- <p class="modal-warning">Это действие нельзя отменить.</p> -->
+        </div>
+        <div class="modal-footer">
+          <button id="cancel-delete" class="btn btn-secondary">Отмена</button>
+          <button id="confirm-delete" class="btn btn-danger">Удалить</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Модальное окно уведомления об успешном удалении -->
+    <div id="success-modal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4>Удаление выполнено</h4>
+          <span class="close">&times;</span>
+        </div>
+        <div class="modal-body">
+          <p>Изображение успешно удалено.</p>
+        </div>
+        <div class="modal-footer">
+          <button id="close-success" class="btn btn-primary">OK</button>
+        </div>
+      </div>
+    </div>
+  
+</body>
+</html>
