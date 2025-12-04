@@ -14,10 +14,10 @@ import random
 
 # ==== CONFIG ====
 MYSQL_CONFIG = {
-    'user': 'proverka',
-    'password': 'T8ysziqex08fzYKDjMSY',
-    'host': '192.168.0.6',
-    'database': 'stablediffusionjobs',
+    'user': '...',
+    'password': '...',
+    'host': 'localhost',
+    'database': 'stjobs',
     'raise_on_warnings': True
 }
 
